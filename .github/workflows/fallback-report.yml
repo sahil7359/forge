@@ -1,0 +1,20 @@
+name: fallback-report
+# 00:45 IST daily: stats-only report if Rig 2 missed midnight; 1st: archive existence check.
+on:
+  schedule:
+    - cron: "15 19 * * *"
+  workflow_dispatch: {}
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r agent/requirements.txt
+      - run: cd agent && python -m forge_agent.fallback report
+        env:
+          API_BASE: ${{ secrets.API_BASE }}
+          AGENT_TOKEN: ${{ secrets.AGENT_TOKEN }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}

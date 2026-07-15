@@ -1,0 +1,20 @@
+name: fallback-nudge
+# 07:20-22:20 IST hourly (UTC+5:30). GitHub cron may drift 5-15 min — acceptable (PRD §6).
+on:
+  schedule:
+    - cron: "50 1-16 * * *"
+  workflow_dispatch: {}
+jobs:
+  nudge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r agent/requirements.txt
+      - run: cd agent && python -m forge_agent.fallback nudge
+        env:
+          API_BASE: ${{ secrets.API_BASE }}
+          AGENT_TOKEN: ${{ secrets.AGENT_TOKEN }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}

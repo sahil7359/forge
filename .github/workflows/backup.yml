@@ -1,0 +1,24 @@
+name: backup
+# Sunday 20:30 UTC. Read-only role, encrypted artifact, 90-day retention (Security.md §8).
+# Secrets needed: BACKUP_URL (forge_backup role), BACKUP_PASSPHRASE.
+on:
+  schedule:
+    - cron: "30 20 * * 0"
+  workflow_dispatch: {}
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update -q && sudo apt-get install -yq postgresql-client
+      - run: |
+          pg_dump "$BACKUP_URL" | gzip | \
+          openssl enc -aes-256-cbc -pbkdf2 -pass env:BACKUP_PASSPHRASE \
+            -out "forge-$(date +%F).sql.gz.enc"
+        env:
+          BACKUP_URL: ${{ secrets.BACKUP_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: "*.enc"
+          retention-days: 90

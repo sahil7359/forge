@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: forge-api
+    runtime: docker
+    rootDir: api
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: USER_TOKEN
+        sync: false
+      - key: AGENT_TOKEN
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ENV
+        value: prod

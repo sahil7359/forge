@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B0E14">
+  <title>Forge</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <style>
+    :root { --bg:#0B0E14; --surface:#151A23; --surface-2:#1C2330; --border:#232B38;
+      --text:#E6EAF2; --text-dim:#8B94A7; --ember:#F97316; --ok:#2DD4A7; --warn:#F5B841;
+      --radius:14px; }
+    * { box-sizing:border-box; margin:0; }
+    body { background:var(--bg); color:var(--text); font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+      max-width:480px; margin:0 auto; padding:16px; padding-top:calc(16px + env(safe-area-inset-top));
+      padding-bottom:calc(16px + env(safe-area-inset-bottom)); min-height:100dvh; }
+    h1 { font-size:26px; color:var(--ember); }
+    .meta { color:var(--text-dim); font-size:13px; margin:4px 0 20px; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
+    label { display:block; font-size:13px; color:var(--text-dim); margin-bottom:6px; }
+    input, textarea { width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+      color:var(--text); font-size:16px; padding:12px; }
+    button { width:100%; background:var(--ember); border:0; border-radius:10px; color:#0B0E14;
+      font-size:16px; font-weight:600; padding:14px; margin-top:12px; }
+    button.secondary { background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
+    #status { font-size:13px; color:var(--text-dim); white-space:pre-wrap; word-break:break-all; margin-top:12px; }
+    .ok { color:var(--ok); } .warn { color:var(--warn); }
+  </style>
+</head>
+<body>
+  <h1>Forge</h1>
+  <p class="meta">POC S1 shell — push pipeline check. Full UI lands in P3 (docs/Design.md).</p>
+
+  <div class="card">
+    <label for="token">USER_TOKEN</label>
+    <input id="token" type="password" autocomplete="off" placeholder="paste token">
+    <button class="secondary" id="saveToken">Save token</button>
+  </div>
+
+  <div class="card">
+    <button id="enablePush">Enable notifications</button>
+    <div id="status">Not subscribed.</div>
+  </div>
+
+  <!-- TODO P3: composer + chips, today feed, tabs (Today/Reports/Settings) per docs/Design.md -->
+  <script src="app.js"></script>
+</body>
+</html>
