@@ -99,12 +99,18 @@ built for this, don't weaken them.
 
 ## 10. Pre-ship checklist (P6 gate)
 
-- [ ] 2FA on GitHub, Render, Supabase
-- [ ] gitleaks CI green; no secret ever committed (check history too)
-- [ ] CORS locked to Pages origin; headers verified (curl)
-- [ ] Rate limits + quotas return 429 (tested)
-- [ ] RLS: cross-user read attempt fails in test (second seed user)
-- [ ] DOMPurify wraps every LLM-rendered surface; CSP `default-src 'self'` passes
-- [ ] Purge invariant tests green; simulated month-close verified
-- [ ] Token + VAPID rotation runbooks executed once
-- [ ] Backup artifact restores locally
+- [x] 2FA on GitHub, Render, Supabase (owner, P0)
+- [x] gitleaks CI green; no secret ever committed (full-history scans, 2026-07-16)
+- [x] CORS locked to Pages origin; headers verified (curl 2026-07-16: exact-origin allow,
+      foreign origin 400; nosniff · frame-deny · no-referrer · no-store all present)
+- [x] Rate limits + quotas return 429 (unit matrix + live; proxy-IP keying fixed to
+      X-Forwarded-For after the live test caught per-connection addresses, 2026-07-16)
+- [ ] RLS: cross-user read attempt fails in test (second seed user) — **blocked:**
+      DATABASE_URL connects as `postgres` (bypassrls). Fix per Runbooks R-4, then run
+      the cross-read test script; it must print 7/7.
+- [x] DOMPurify wraps every LLM-rendered surface; CSP `default-src 'self'` passes
+      (XSS probe inert in-browser; CSP verified on the deployed page, 2026-07-16)
+- [x] Purge invariant tests green (7 CI cases + live 409-without-archive);
+      simulated month-close on staging data lands in P7
+- [ ] Token + VAPID rotation runbooks executed once (written: Runbooks R-1/R-2; execute in P7)
+- [ ] Backup artifact restores locally (Runbooks R-3; needs the first backup.yml run)

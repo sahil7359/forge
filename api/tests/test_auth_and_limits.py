@@ -106,6 +106,27 @@ def test_unauth_ip_burns_out_at_10_failures(client):
     assert r.json()["error"]["code"] == "rate_limited"
 
 
+def test_unauth_burnout_keys_on_forwarded_for(client):
+    """Behind Render's proxy the peer address rotates — X-Forwarded-For must be the key."""
+    for i in range(10):
+        r = client.get(
+            "/v1/tasks",
+            headers={**auth_header(f"bad{i}" + "x" * 30), "X-Forwarded-For": "203.0.113.7"},
+        )
+        assert r.status_code == 401
+    r = client.get(
+        "/v1/tasks",
+        headers={**auth_header("badZ" + "x" * 30), "X-Forwarded-For": "203.0.113.7"},
+    )
+    assert r.status_code == 429
+    # a different client is unaffected
+    r = client.get(
+        "/v1/tasks",
+        headers={**auth_header("badZ" + "x" * 30), "X-Forwarded-For": "203.0.113.99"},
+    )
+    assert r.status_code == 401
+
+
 def test_token_rate_limit_60_per_minute(client):
     codes = [
         client.get("/v1/tasks", headers=auth_header(USER_TOKEN)).status_code for _ in range(61)

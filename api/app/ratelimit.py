@@ -26,11 +26,21 @@ _requests: dict[str, deque[float]] = defaultdict(deque)
 _failures: dict[str, deque[float]] = defaultdict(deque)
 
 
+def client_ip(request: Request) -> str:
+    """Behind Render's proxy request.client.host is a per-connection internal address —
+    the real client arrives in X-Forwarded-For (P6 finding: per-IP windows never
+    accumulated in production). Defense-in-depth only; the tokens are the real wall."""
+    forwarded = request.headers.get("x-forwarded-for", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
 def _key(request: Request) -> str:
     token = request.headers.get("authorization", "")
     if token:
         return "t:" + hashlib.sha256(token.encode()).hexdigest()[:16]
-    return "ip:" + (request.client.host if request.client else "unknown")
+    return "ip:" + client_ip(request)
 
 
 def _slide(window: deque[float], now: float) -> None:
@@ -49,7 +59,7 @@ class RateLimit(BaseHTTPMiddleware):
         if request.url.path in EXEMPT_PATHS:
             return await call_next(request)
         now = time.monotonic()
-        ip = request.client.host if request.client else "unknown"
+        ip = client_ip(request)
 
         fails = _failures[ip]
         _slide(fails, now)
