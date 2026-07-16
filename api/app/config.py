@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     agent_token: str = ""
     cors_origin: str = ""
     env: str = "dev"
+    day_total: int = 84  # plan length; Day N/84 (PRD F9)
 
 
 settings = Settings()

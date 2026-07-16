@@ -2,3 +2,6 @@ target-version = "py312"
 line-length = 100
 [lint]
 select = ["E", "F", "I", "UP", "B", "ASYNC"]
+[lint.flake8-bugbear]
+# FastAPI's dependency-injection idiom: Depends/Query in defaults is the framework contract
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
