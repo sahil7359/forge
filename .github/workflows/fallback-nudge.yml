@@ -1,8 +1,10 @@
 name: fallback-nudge
 # 07:20-22:20 IST hourly (UTC+5:30). GitHub cron may drift 5-15 min — acceptable (PRD §6).
 on:
-  schedule:
-    - cron: "50 1-16 * * *"
+  # Schedule disabled until ship (P7). Re-enable once Rig 2 is live + Actions secrets set,
+  # else every hourly run fails (no secrets / API 500s) and emails a failure. See Tracker P7.
+  # schedule:
+  #   - cron: "50 1-16 * * *"
   workflow_dispatch: {}
 jobs:
   nudge:

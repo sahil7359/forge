@@ -2,8 +2,9 @@ name: backup
 # Sunday 20:30 UTC. Read-only role, encrypted artifact, 90-day retention (Security.md §8).
 # Secrets needed: BACKUP_URL (forge_backup role), BACKUP_PASSPHRASE.
 on:
-  schedule:
-    - cron: "30 20 * * 0"
+  # Schedule disabled until ship (P7). Re-enable once BACKUP_URL + BACKUP_PASSPHRASE are set.
+  # schedule:
+  #   - cron: "30 20 * * 0"
   workflow_dispatch: {}
 jobs:
   dump:

@@ -1,8 +1,9 @@
 name: fallback-report
 # 00:45 IST daily: stats-only report if Rig 2 missed midnight; 1st: archive existence check.
 on:
-  schedule:
-    - cron: "15 19 * * *"
+  # Schedule disabled until ship (P7). Re-enable with the Actions secrets. See Tracker P7.
+  # schedule:
+  #   - cron: "15 19 * * *"
   workflow_dispatch: {}
 jobs:
   report:
