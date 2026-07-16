@@ -10,7 +10,12 @@ from app.main import app
 from conftest import AGENT_TOKEN, USER_TOKEN, FakeConn, FakeResult, auth_header
 from fastapi.testclient import TestClient
 
-USER_ROUTES = [("GET", "/v1/tasks"), ("GET", "/v1/today"), ("GET", "/v1/archives")]
+USER_ROUTES = [
+    ("GET", "/v1/tasks"),
+    ("GET", "/v1/today"),
+    ("GET", "/v1/archives"),
+    ("GET", "/v1/settings"),
+]
 AGENT_ROUTES = [("GET", "/v1/context"), ("GET", "/v1/push/subscriptions")]
 
 
@@ -74,6 +79,13 @@ def test_purge_without_archive_is_409_archive_missing():
     r = client.post("/v1/purge", json={"ym": "2026-06"}, headers=auth_header(AGENT_TOKEN))
     assert r.status_code == 409
     assert r.json()["error"]["code"] == "archive_missing"
+
+
+def test_settings_patch_validates_ranges(client):
+    r = client.patch("/v1/settings", json={"active_start": 25}, headers=auth_header(USER_TOKEN))
+    assert r.status_code == 422
+    r = client.patch("/v1/settings", json={}, headers=auth_header(USER_TOKEN))
+    assert r.status_code == 422
 
 
 def test_body_cap_413(client):

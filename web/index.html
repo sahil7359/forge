@@ -4,46 +4,206 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0B0E14">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; connect-src 'self' https://forge-tuvr.onrender.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'self'; form-action 'self'">
   <title>Forge</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <style>
     :root { --bg:#0B0E14; --surface:#151A23; --surface-2:#1C2330; --border:#232B38;
       --text:#E6EAF2; --text-dim:#8B94A7; --ember:#F97316; --ok:#2DD4A7; --warn:#F5B841;
-      --radius:14px; }
+      --danger:#EF4444; --radius:14px; --radius-sm:10px;
+      --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif; }
     * { box-sizing:border-box; margin:0; }
-    body { background:var(--bg); color:var(--text); font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-      max-width:480px; margin:0 auto; padding:16px; padding-top:calc(16px + env(safe-area-inset-top));
-      padding-bottom:calc(16px + env(safe-area-inset-bottom)); min-height:100dvh; }
-    h1 { font-size:26px; color:var(--ember); }
-    .meta { color:var(--text-dim); font-size:13px; margin:4px 0 20px; }
-    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
-    label { display:block; font-size:13px; color:var(--text-dim); margin-bottom:6px; }
-    input, textarea { width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
-      color:var(--text); font-size:16px; padding:12px; }
-    button { width:100%; background:var(--ember); border:0; border-radius:10px; color:#0B0E14;
-      font-size:16px; font-weight:600; padding:14px; margin-top:12px; }
+    html { height:100%; }
+    body { background:var(--bg); color:var(--text); font:16px/1.5 var(--font);
+      max-width:480px; margin:0 auto; min-height:100dvh;
+      padding:12px 16px calc(76px + env(safe-area-inset-bottom));
+      padding-top:calc(12px + env(safe-area-inset-top)); }
+    h1 { font-size:26px; font-weight:600; color:var(--ember); }
+    h2 { font-size:20px; font-weight:600; margin:16px 0 8px; }
+    .meta { color:var(--text-dim); font-size:13px; }
+    .card { background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+    label { display:block; font-size:13px; color:var(--text-dim); margin:10px 0 4px; }
+    input, textarea, select { width:100%; background:var(--surface-2); border:1px solid var(--border);
+      border-radius:var(--radius-sm); color:var(--text); font-size:16px; font-family:var(--font); padding:12px; }
+    textarea { resize:none; overflow:hidden; min-height:64px; }
+    input:focus-visible, textarea:focus-visible, button:focus-visible, select:focus-visible
+      { outline:2px solid var(--ember); outline-offset:1px; }
+    button { background:var(--ember); border:0; border-radius:var(--radius-sm); color:#0B0E14;
+      font-size:16px; font-weight:600; font-family:var(--font); padding:13px 16px; min-height:48px; width:100%; }
+    button:active { filter:brightness(.85); }
     button.secondary { background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
-    #status { font-size:13px; color:var(--text-dim); white-space:pre-wrap; word-break:break-all; margin-top:12px; }
+    button:disabled { opacity:.45; }
+
+    /* header strip */
+    #strip { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin:2px 0 12px; }
+    #strip .day { font-size:26px; font-weight:600; }
+    #strip .streak { color:var(--ember); font-weight:600; }
+
+    /* chips */
+    .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .chip { background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim);
+      border-radius:999px; padding:8px 14px; font-size:13px; width:auto; min-height:44px; font-weight:400; }
+    .chip.on { border-color:var(--ember); color:var(--ember); font-weight:600; }
+    .subfield { display:none; margin-top:10px; }
+    .subfield.show { display:block; }
+    .stepper { display:flex; gap:8px; }
+    .stepper button { width:auto; flex:1; }
+    .stepper button.on { background:var(--ember); color:#0B0E14; border-color:var(--ember); }
+
+    /* feed */
+    .row { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+    .row:last-child { border-bottom:0; }
+    .row .time { color:var(--text-dim); font-size:13px; min-width:46px; padding-top:2px; }
+    .row .body { flex:1; overflow-wrap:anywhere; }
+    .tag { font-size:11px; color:var(--text-dim); border:1px solid var(--border);
+      border-radius:999px; padding:1px 8px; margin-left:6px; white-space:nowrap; }
+    .row.pending-retry .time::after { content:" ↻"; color:var(--warn); }
+    .task-row input[type=checkbox] { width:22px; height:22px; margin-top:3px; accent-color:var(--ok); }
+    .task-row.done .body { text-decoration:line-through; color:var(--text-dim); }
+
+    #banner { display:none; background:var(--warn); color:#0B0E14; font-size:13px; font-weight:600;
+      border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:12px; }
+    #banner.show { display:block; }
+
+    /* reports */
+    .list-item { padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+    .list-item:last-child { border-bottom:0; }
+    #reportView { display:none; }
+    #reportMd { overflow-wrap:anywhere; }
+    #reportMd h2 { font-size:20px; margin:18px 0 6px; }
+    #reportMd ul { padding-left:20px; }
+    #reportMd code { background:var(--surface-2); border-radius:4px; padding:1px 5px; }
+
+    /* tabs */
+    nav { position:fixed; bottom:0; left:0; right:0; background:var(--surface);
+      border-top:1px solid var(--border); display:flex; max-width:480px; margin:0 auto;
+      padding-bottom:env(safe-area-inset-bottom); }
+    nav button { flex:1; background:none; color:var(--text-dim); font-size:13px; font-weight:400;
+      border:0; border-radius:0; padding:10px 0 12px; min-height:56px; }
+    nav button.on { color:var(--ember); font-weight:600; }
+    nav .glyph { display:block; font-size:20px; line-height:1.2; }
+
+    .tab { display:none; } .tab.on { display:block; }
     .ok { color:var(--ok); } .warn { color:var(--warn); }
+    #settingsStatus, #pushStatus { font-size:13px; white-space:pre-wrap; word-break:break-all; margin-top:10px; }
+    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--text-dim); }
+    .dot.up { background:var(--ok); } .dot.waking { background:var(--warn); }
   </style>
 </head>
 <body>
-  <h1>Forge</h1>
-  <p class="meta">POC S1 shell — push pipeline check. Full UI lands in P3 (docs/Design.md).</p>
+  <div id="banner" role="status"></div>
 
-  <div class="card">
-    <label for="token">USER_TOKEN</label>
-    <input id="token" type="password" autocomplete="off" placeholder="paste token">
-    <button class="secondary" id="saveToken">Save token</button>
-  </div>
+  <!-- TODAY -->
+  <section id="tab-today" class="tab on">
+    <div id="strip">
+      <span class="day" id="dayCounter">Forge</span>
+      <span class="streak" id="streak"></span>
+      <span class="meta" id="pendingCount"></span>
+      <span class="meta" id="expenses"></span>
+    </div>
 
-  <div class="card">
-    <button id="enablePush">Enable notifications</button>
-    <div id="status">Not subscribed.</div>
-  </div>
+    <div class="card">
+      <textarea id="composer" placeholder="What moved?" rows="2" maxlength="4000"></textarea>
+      <div class="chips" id="chips" role="radiogroup" aria-label="log type">
+        <button class="chip on" data-type="checkin">check-in</button>
+        <button class="chip" data-type="task">task</button>
+        <button class="chip" data-type="expense">expense</button>
+        <button class="chip" data-type="fitness">fitness</button>
+        <button class="chip" data-type="habit">habit</button>
+        <button class="chip" data-type="deepwork">deep work</button>
+      </div>
+      <div class="subfield" id="amountField">
+        <label for="amount">Amount (₹)</label>
+        <input id="amount" type="number" inputmode="decimal" min="0" placeholder="0">
+      </div>
+      <div class="subfield" id="minutesField">
+        <label>Deep-work minutes</label>
+        <div class="stepper" id="minutesStepper">
+          <button class="secondary" data-min="30">30</button>
+          <button class="secondary on" data-min="60">60</button>
+          <button class="secondary" data-min="90">90</button>
+          <button class="secondary" data-min="120">120</button>
+        </div>
+      </div>
+      <button id="logBtn" style="margin-top:12px">Log</button>
+    </div>
 
-  <!-- TODO P3: composer + chips, today feed, tabs (Today/Reports/Settings) per docs/Design.md -->
+    <div class="card" id="tasksCard" hidden>
+      <h2 style="margin-top:0">Pending</h2>
+      <div id="taskList"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Today</h2>
+      <div id="feed"><p class="meta">Nothing logged yet. The 07:00 coach reads yesterday's plan.</p></div>
+    </div>
+  </section>
+
+  <!-- REPORTS -->
+  <section id="tab-reports" class="tab">
+    <div id="reportLists">
+      <h2>Daily</h2>
+      <div class="card" id="dailyList"><p class="meta">First report lands tonight at 00:05.</p></div>
+      <h2>Monthly archives</h2>
+      <div class="card" id="archiveList"><p class="meta">First archive lands on the 1st, 00:25.</p></div>
+      <h2>Yearly</h2>
+      <div class="card">
+        <select id="yearPick" aria-label="year"></select>
+        <button class="secondary" id="yearPdf" style="margin-top:10px">Compile year PDF</button>
+        <div class="meta" id="yearStatus" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div id="reportView">
+      <button class="secondary" id="backBtn" style="width:auto;padding:8px 16px;min-height:40px">← Back</button>
+      <p class="meta" id="reportMeta" style="margin:10px 0 4px"></p>
+      <div class="card"><div id="reportMd"></div></div>
+      <button id="pdfBtn" hidden>Download PDF</button>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="tab-settings" class="tab">
+    <div class="card">
+      <label for="token">USER_TOKEN</label>
+      <input id="token" type="password" autocomplete="off" placeholder="paste token">
+      <button class="secondary" id="saveToken" style="margin-top:10px">Save token</button>
+    </div>
+    <div class="card">
+      <button id="enablePush">Enable notifications</button>
+      <div id="pushStatus" class="meta">Not subscribed.</div>
+      <p class="meta" style="margin-top:10px">Test push: run the send script on Rig 2, or trigger
+        the fallback-nudge workflow (GitHub → Actions). iOS: install via Safari → Share →
+        Add to Home Screen first; allowlist Forge in Focus modes.</p>
+    </div>
+    <div class="card">
+      <h2 style="margin-top:0">Nudge engine</h2>
+      <label for="setStart">Active window start (hour, IST)</label>
+      <input id="setStart" type="number" min="0" max="23" inputmode="numeric">
+      <label for="setEnd">Active window end (hour, IST)</label>
+      <input id="setEnd" type="number" min="0" max="23" inputmode="numeric">
+      <label for="setGap">Min minutes between nudges</label>
+      <input id="setGap" type="number" min="10" max="720" inputmode="numeric">
+      <label for="setHard">Hard mode after (hours silent)</label>
+      <input id="setHard" type="number" min="1" max="24" inputmode="numeric">
+      <button class="secondary" id="saveSettings" style="margin-top:12px">Save settings</button>
+      <div id="settingsStatus" class="meta"></div>
+    </div>
+    <p class="meta"><span class="dot" id="healthDot"></span> <span id="healthText">API: checking…</span>
+      · v1 · <span id="swState"></span></p>
+  </section>
+
+  <nav aria-label="tabs">
+    <button data-tab="today" class="on"><span class="glyph">▣</span>Today</button>
+    <button data-tab="reports"><span class="glyph">≡</span>Reports</button>
+    <button data-tab="settings"><span class="glyph">⚙</span>Settings</button>
+  </nav>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

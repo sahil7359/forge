@@ -103,3 +103,11 @@ class ArchiveIn(BaseModel):
 
 class PurgeIn(BaseModel):
     ym: Annotated[str, Field(pattern=r"^\d{4}-\d{2}$")]
+
+
+class SettingsPatch(BaseModel):
+    active_start: Annotated[int | None, Field(ge=0, le=23)] = None
+    active_end: Annotated[int | None, Field(ge=0, le=23)] = None
+    nudge_min_gap_min: Annotated[int | None, Field(ge=10, le=720)] = None
+    suppress_after_log_min: Annotated[int | None, Field(ge=0, le=720)] = None
+    hard_mode_after_hours: Annotated[int | None, Field(ge=1, le=24)] = None

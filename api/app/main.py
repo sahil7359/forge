@@ -14,6 +14,7 @@ from starlette.responses import JSONResponse, Response
 from app.config import settings
 from app.ratelimit import RateLimit
 from app.routes import agent, logs, push, reports, tasks
+from app.routes import settings as settings_routes
 
 structlog.configure(
     processors=[
@@ -80,6 +81,7 @@ app.include_router(logs.router, prefix="/v1")
 app.include_router(tasks.router, prefix="/v1")
 app.include_router(reports.router, prefix="/v1")
 app.include_router(push.router, prefix="/v1")
+app.include_router(settings_routes.router, prefix="/v1")
 app.include_router(agent.router, prefix="/v1")
 
 # added last = outermost; CORS must wrap everything so error responses carry headers too
