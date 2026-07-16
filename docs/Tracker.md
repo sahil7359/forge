@@ -21,7 +21,7 @@ Update at the end of every session (Rules R7).
 | Spike | Gate | Result | Numbers |
 |---|---|---|---|
 | S1 iOS push | lock-screen delivery, app closed, cellular + post-reboot | — | — |
-| S2 Ollama | p95 < 60 s, valid JSON ≥ 8/10, no hallucinated events | — | model: · tok/s: · p95: |
+| S2 Ollama | p95 < 60 s, valid JSON ≥ 8/10, no hallucinated events | **green** (2026-07-16) | model: qwen2.5:7b-instruct · tok/s: 141 · p95: 0.61 s · 10/10 valid JSON · 10/10 anchored to fixture logs · model load 32.6 s · 6.6 GB VRAM 100% GPU |
 | S3 Cold start | agent survives ≤ 150 s, 3/3 | — | wake times: |
 
 ## Session log
@@ -31,7 +31,9 @@ Update at the end of every session (Rules R7).
 | 2026-07-15 | docs | Full docs package v1 (PRD, TechSpec, AppFlow, Design, Schema, Security, POC, Plan, Rules, Tracker) | — | — |
 | 2026-07-15 | P0 | branch→`main`; venv + deps; USER/AGENT tokens + VAPID keypair → gitignored `.env`s + `secrets/`; qwen2.5:7b-instruct pulled; ruff+pytest+gitleaks green local; `/healthz` 200 local; fixes: migrate.py ASYNC240, tzdata dep (Windows zoneinfo) | cloud accounts (see Blockers); first token set echoed into terminal output by a pytest traceback → all secrets regenerated, leaked set never deployed | 35 |
 
-**Next single task:** owner completes cloud accounts (Blockers list) → verify P0 DoD → start P1 S1 (iOS push spike).
+| 2026-07-16 | P0 done · P1 | public-showcase scrub (personal refs removed; contact → help.sahil.gob@gmail.com); P0 DoD verified (healthz · Pages 200 · qwen2.5); S1 spike page live (VAPID key wired, subscription JSON shown pre-API); S2 **green**: p95 0.61 s, 10/10 valid JSON, 141 tok/s | S1 awaits iPhone; S3 awaits real Render URL | 45 |
+
+**Next single task:** S1 on the iPhone (install PWA → subscribe → run `s1_send_push.py` from Rig 2, verify lock-screen delivery incl. cellular + post-reboot), then S3 cold-start runs against the real Render URL.
 
 **Process note:** every phase ends with an in-depth private report in `phase-reports/` (gitignored — never commit), containing blockers, incidents, evidence, owner to-dos, and the next phase's run command. P0 report exists.
 
