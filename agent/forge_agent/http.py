@@ -5,6 +5,11 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 from forge_agent.config import settings
 
+# The agent sends AGENT_TOKEN on every call — refuse to send it over plaintext or to an
+# unset base (Threats.md T-6). TLS is what authenticates the Render server.
+if settings.api_base and not settings.api_base.startswith("https://"):
+    raise RuntimeError("API_BASE must be https:// — refusing to send the agent token in cleartext")
+
 HEADERS = {"Authorization": f"Bearer {settings.agent_token}"}
 
 

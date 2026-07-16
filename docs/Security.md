@@ -114,3 +114,5 @@ built for this, don't weaken them.
       simulated month-close on staging data lands in P7
 - [ ] Token + VAPID rotation runbooks executed once (written: Runbooks R-1/R-2; execute in P7)
 - [ ] Backup artifact restores locally (Runbooks R-3; needs the first backup.yml run)
+- [ ] **Ollama bound to localhost + 11434 inbound blocked** on Rig 1 AND Rig 2
+      (Threats.md T-1 — GPU-abuse fix; `netstat` shows 127.0.0.1, not 0.0.0.0)
