@@ -7,9 +7,9 @@ Update at the end of every session (Rules R7).
 | Phase | Budget | Status | Actual |
 |---|---|---|---|
 | P0 Accounts, keys, scaffold | 1 h | done (healthz live · Pages live · qwen2.5 pulled) | ~1 h |
-| P1 POC spikes (S1 push · S2 Ollama · S3 cold start) | 2.5 h | in progress | — |
-| P2 DB + API core | 3 h | not started | — |
-| P3 PWA | 3 h | not started | — |
+| P1 POC spikes (S1 push · S2 Ollama · S3 cold start) | 2.5 h | S2 green · S1 awaits iPhone · S3 cycles running | 0.5 h |
+| P2 DB + API core | 3 h | deployed; 75 tests green; walkthrough blocked on migration 004 | 1.5 h |
+| P3 PWA | 3 h | built + deployed to Pages; browser-verified; iPhone DoD pending | 1.5 h |
 | P4 Agent on Rig 2 | 2.5 h | not started | — |
 | P5 Actions fallbacks + backup | 1.5 h | not started | — |
 | P6 Hardening (Security §10) | 1.5 h | not started | — |
@@ -21,8 +21,8 @@ Update at the end of every session (Rules R7).
 | Spike | Gate | Result | Numbers |
 |---|---|---|---|
 | S1 iOS push | lock-screen delivery, app closed, cellular + post-reboot | — | — |
-| S2 Ollama | p95 < 60 s, valid JSON ≥ 8/10, no hallucinated events | **green** (2026-07-16) | model: qwen2.5:7b-instruct · tok/s: 141 · p95: 0.61 s · 10/10 valid JSON · 10/10 anchored to fixture logs · model load 32.6 s · 6.6 GB VRAM 100% GPU |
-| S3 Cold start | agent survives ≤ 150 s, 3/3 | — | wake times: |
+| S2 Ollama | p95 < 60 s, valid JSON ≥ 8/10, no hallucinated events | **green on Rig 1** — re-verify on Rig 2 (2060 Super) before P4 sign-off | model: qwen2.5:7b-instruct · tok/s: 141 · p95: 0.61 s · 10/10 valid JSON · 10/10 anchored · model load 32.6 s · 6.6 GB VRAM (measured on Rig 1 5070 Ti — ~100x gate margin, low risk on 2060S) |
+| S3 Cold start | agent survives ≤ 150 s, 3/3 | 3 timed cycles running (results → phase-reports/spikes/s3_results.txt) | wake times: |
 
 ## Session log
 
@@ -32,8 +32,9 @@ Update at the end of every session (Rules R7).
 | 2026-07-15 | P0 | branch→`main`; venv + deps; USER/AGENT tokens + VAPID keypair → gitignored `.env`s + `secrets/`; qwen2.5:7b-instruct pulled; ruff+pytest+gitleaks green local; `/healthz` 200 local; fixes: migrate.py ASYNC240, tzdata dep (Windows zoneinfo) | cloud accounts (see Blockers); first token set echoed into terminal output by a pytest traceback → all secrets regenerated, leaked set never deployed | 35 |
 
 | 2026-07-16 | P0 done · P1 | public-showcase scrub (personal refs removed; contact → help.sahil.gob@gmail.com); P0 DoD verified (healthz · Pages 200 · qwen2.5); S1 spike page live (VAPID key wired, subscription JSON shown pre-API); S2 **green**: p95 0.61 s, 10/10 valid JSON, 141 tok/s | S1 awaits iPhone; S3 awaits real Render URL | 45 |
+| 2026-07-16 | P1–P3 | second personal-info pass (Blueprint/plan refs out; contact email swapped everywhere incl. seed + VAPID); S2 numbers re-attributed to Rig 1 (5070 Ti) — re-verify on Rig 2; S3 3-cycle measurement running against forge-tuvr.onrender.com; **P2 shipped**: auth/RLS/routes/limits/purge-proposal + migration 004, 75 tests, deployed, no-auth walkthrough green (CORS exact-origin verified), authed walkthrough blocked on 004; **P3 shipped**: full PWA deployed to Pages (composer+chips, offline IndexedDB queue w/ self-heal fix found in browser testing, sanitized reports w/ XSS verified inert, monthly+yearly jsPDF, sw shell cache, /settings API) | migration 004 (owner, SQL editor); S1 iPhone steps; Rig-2 S2 re-run; walkthrough re-run post-004 | 150 |
 
-**Next single task:** S1 on the iPhone (install PWA → subscribe → run `s1_send_push.py` from Rig 2, verify lock-screen delivery incl. cellular + post-reboot), then S3 cold-start runs against the real Render URL.
+**Next single task:** owner clears Blockers 1–2 (migration 004 + S1 iPhone test) → close P1 in the POC table → P4 (agent on Rig 2).
 
 **Process note:** every phase ends with an in-depth private report in `phase-reports/` (gitignored — never commit), containing blockers, incidents, evidence, owner to-dos, and the next phase's run command. P0 report exists.
 
@@ -53,9 +54,14 @@ Update at the end of every session (Rules R7).
 
 ## Blockers
 
-- S1 needs the iPhone in hand (subscribe on the installed PWA, then test push from Rig 2).
-- S3 needs the real Render service URL (`forge-api.onrender.com` belongs to someone else's
-  suspended app — confirm the actual URL from the Render dashboard).
+1. **Migration 004** (owner, 1 min): Supabase SQL editor → run `api/migrations/004_users_lookup.sql`
+   (needs postgres role; forge_api can't create policies). Every authed route 500s until then.
+   Then re-run `phase-reports/spikes/p2_walkthrough.py` → expect 21/21.
+2. **S1 iPhone steps** (owner): install PWA from `https://sahil7359.github.io/forge/`, paste
+   USER_TOKEN in Settings, Enable notifications, then `s1_send_push.py` from this machine.
+3. **S2 re-verify on Rig 2** (2060 Super) before P4 sign-off — current numbers are from Rig 1.
+4. Consistency (non-blocking): Actions secret `VAPID_SUB` → mailto:help.sahil.gob@gmail.com;
+   Supabase: `update users set email='help.sahil.gob@gmail.com' where email like 'sahil%';`
 
 ## Someday (parked — Rules R2, do not start before v1 ships)
 
