@@ -1,13 +1,13 @@
 # Tracker — Forge (living document)
 
-Update at the end of every session (Rules R7). Format mirrors Blueprint STREAK_LOG.
+Update at the end of every session (Rules R7).
 
 ## Phase status
 
 | Phase | Budget | Status | Actual |
 |---|---|---|---|
-| P0 Accounts, keys, scaffold | 1 h | in progress — machine-side done, cloud accounts left | 0.6 h |
-| P1 POC spikes (S1 push · S2 Ollama · S3 cold start) | 2.5 h | not started | — |
+| P0 Accounts, keys, scaffold | 1 h | done (healthz live · Pages live · qwen2.5 pulled) | ~1 h |
+| P1 POC spikes (S1 push · S2 Ollama · S3 cold start) | 2.5 h | in progress | — |
 | P2 DB + API core | 3 h | not started | — |
 | P3 PWA | 3 h | not started | — |
 | P4 Agent on Rig 2 | 2.5 h | not started | — |
@@ -40,37 +40,27 @@ Update at the end of every session (Rules R7). Format mirrors Blueprint STREAK_L
 | Date | Decision | Why |
 |---|---|---|
 | 2026-07-15 | PWA over native iOS | no Mac dependency, $0, Web Push works on iOS ≥ 16.4 |
-| 2026-07-15 | Name: Forge | forging the TCS → GenAI transition |
-| 2026-07-15 | Python/FastAPI stack | mirrors Blueprint Tracks 5–6; reps while building |
+| 2026-07-15 | Name: Forge | forging daily discipline into shipped work |
+| 2026-07-15 | Python/FastAPI stack | typed async Python; practice reps while building |
 | 2026-07-15 | All intelligence on Rig 2 (hourly + midnight), Actions = dumb fallback | local LLM requirement; simplest trust model; pull-only home network |
 | 2026-07-15 | qwen2.5:7b-instruct primary, llama3.2:3b fallback | Rig 2 2060 Super capability (verify in S2) |
 | 2026-07-15 | Month-boundary retention + permanent full-fidelity archives | owner requirement: ~1 month raw, monthly reports keep every timestamp |
-| 2026-07-15 | Nudge tone: adaptive, hard mode at ≥ 4 h silence | owner choice; Ch. 12 language allowed |
+| 2026-07-15 | Nudge tone: adaptive, hard mode at ≥ 4 h silence | owner choice; blunt language allowed |
 | 2026-07-15 | user_id + RLS from migration 001 | future sharing without rearchitecting; Security §9 |
 | 2026-07-15 | Fallback jobs call API (not DB) | single trust path; only backup touches DB read-only |
 
 ## Blockers
 
-P0 owner-account actions (need Sahil's credentials):
+- S1 needs the iPhone in hand (subscribe on the installed PWA, then test push from Rig 2).
+- S3 needs the real Render service URL (`forge-api.onrender.com` belongs to someone else's
+  suspended app — confirm the actual URL from the Render dashboard).
 
-1. GitHub: create private repo `forge`; `git remote add origin … && git push -u origin main`;
-   enable secret scanning + push protection; 2FA on GitHub, Render, Supabase (Security §5).
-2. Supabase: new project (ap-south/Mumbai if offered); SQL editor → run
-   `api/migrations/manual/000_roles.sql`, then 001–003 (or `scripts/migrate.py`); copy
-   session-pooler DATABASE_URL → `api/.env` + Render env.
-3. Render: new web service from repo `api/Dockerfile`; env = DATABASE_URL, USER_TOKEN,
-   AGENT_TOKEN, CORS_ORIGIN (values already in local `api/.env`).
-4. GitHub Pages: enable (Actions source). Actions secrets: AGENT_TOKEN, VAPID_PRIVATE
-   (`secrets/vapid_private.pem`), VAPID_SUB=mailto:sahilch7359@gmail.com, BACKUP_URL, API_BASE.
-5. After Render is live: fill `API_BASE` in `agent/.env`.
-
-## Someday (parked — Rules R2, do not start before v1 ships + Project 1 is live)
+## Someday (parked — Rules R2, do not start before v1 ships)
 
 - Supabase Auth + invite codes (sharing mode, Security §9)
 - Chat-with-coach (PWA ↔ Ollama, needs tunnel design — conflicts with pull-only rule, think hard)
 - Langfuse tracing on agent (Track 6 practice)
-- Habit/expense charts; weekly Sunday review auto-draft (Ch. 12 ritual)
+- Habit/expense charts; weekly Sunday review auto-draft
 - Apple Shortcuts quick-log (POST /logs from share sheet)
 - Android/desktop layouts; App Store wrapper via Capacitor
 - RAG over archives ("what did I ship in week 3?")
-- Blueprint gate tracking UI (G1–G3 checklists)

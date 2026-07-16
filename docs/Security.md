@@ -1,8 +1,8 @@
 # Security — Forge
 
 Requirement from owner: the app may later be shared with real users; the setup must not be
-exploitable — and Sahil's home network must never be exposed. Doubles as Blueprint Track 6
-(agentic OWASP) practice.
+exploitable — and Sahil's home network must never be exposed. Doubles as agentic-OWASP
+practice.
 
 ## 1. Assets & trust boundaries
 
@@ -22,7 +22,7 @@ leaked repo secrets.
 - **Single trust path.** Everything writes through the FastAPI boundary. Only the weekly backup
   reads the DB directly, with a dedicated read-only role.
 - **Local-only LLM.** Log content never leaves Supabase + Rig 2. No third-party AI processor
-  (DPDP-friendly; Blueprint data-residency talking point).
+  (DPDP-friendly data residency).
 
 ## 3. Authentication & authorization
 

@@ -1,8 +1,8 @@
 # Rules — Forge repo (house rules for every session)
 
-Derived from Blueprint v2.1 Ch. 6A + Ch. 12. Violations are review-blockers.
+Violations are review-blockers.
 
-## R1 — Ownership split (adapted Ch. 6A)
+## R1 — Ownership split
 
 Forge is a **tool** (Rule-2 territory): scaffolding, routes, PWA plumbing, YAML, tests →
 generate/delegate freely. Hand-written by Sahil only, never delegated:
@@ -10,13 +10,13 @@ generate/delegate freely. Hand-written by Sahil only, never delegated:
 - the purge-invariant logic in `/purge`
 - `Security.md` decisions
 Nothing merges unexplained: self-review every diff; commit messages state **why**, written by
-Sahil (Ch. 6A R3).
+Sahil.
 
 ## R2 — Scope freeze
 
 PRD "Won't" list is law. Any new idea mid-session → one line in Tracker.md → Someday, then back
-to the phase task (Ch. 12: "a new project idea while a project is unfinished = the avoidance
-pattern"). Forge work must never displace Project 1 hours: hard cap 16 h to v1, then Forge only
+to the phase task (a new project idea while a project is unfinished = the avoidance pattern).
+Forge work must never displace primary-project hours: hard cap 16 h to v1, then Forge only
 gets maintenance minutes.
 
 ## R3 — Security invariants (never regress; CI-gated where possible)
@@ -54,10 +54,10 @@ date, kind)`).
 Start: read the current phase in ImplementationPlan → its DoD. End (mandatory): tests
 green · deployable commit pushed · Tracker.md updated (date, phase, shipped, blockers, minutes)
 · next session's single task written down. A session with no shipped artifact gets logged as a
-miss (Ch. 12 rule — misses are data, not shame).
+miss (misses are data, not shame).
 
 ## R8 — When stuck
 
-20-minute research cap (Ch. 12), then: reproduce in a failing test, or write the limitation
+20-minute research cap, then: reproduce in a failing test, or write the limitation
 into Tracker.md → Blockers and move to the next task. Two consecutive stuck sessions on the
 same item → scope-cut discussion (ImplementationPlan cut list), never a rewrite.

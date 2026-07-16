@@ -1,6 +1,6 @@
 # TechSpec — Forge v1
 
-Stack mirrors Blueprint v2.1 Tracks 5–6 so building Forge doubles as practice reps.
+Typed async Python end to end, free tier everywhere, no build step on the frontend.
 
 ## 1. Stack
 
@@ -10,13 +10,13 @@ Stack mirrors Blueprint v2.1 Tracks 5–6 so building Forge doubles as practice 
 | PDF | jsPDF (vendored) | client-side monthly/yearly export |
 | Markdown render | marked + DOMPurify (vendored) | reports/nudges are LLM output → always sanitized (Security §6) |
 | Hosting (web) | GitHub Pages via Actions | free, HTTPS, anywhere |
-| API | FastAPI · Python 3.12 · Pydantic v2 · SQLAlchemy 2 async + asyncpg · slowapi · structlog | Blueprint Track 5 stack |
+| API | FastAPI · Python 3.12 · Pydantic v2 · SQLAlchemy 2 async + asyncpg · slowapi · structlog | typed async Python stack |
 | API hosting | Render free web service, Docker (multi-stage) | sleeps after idle; cold start 60–120 s tolerated |
 | DB | Supabase Postgres (free) | RLS day 1; connect via Supabase **session pooler**; asyncpg `statement_cache_size=0` |
 | LLM | Ollama `qwen2.5:7b-instruct` (Q4_K_M) on Rig 2 | fallback model if RAM-tight: `llama3.2:3b` |
 | Agent | Python package `/agent` on Rig 2, Windows Task Scheduler | pull-only; pywebpush sender |
 | Fallbacks/CI | GitHub Actions | cron jobs, ruff+pytest+gitleaks, weekly backup |
-| Push | Web Push, VAPID (`py_vapid` keygen), subject `mailto:sahilch7359@gmail.com` | public key in client; private key only Rig 2 `.env` + Actions secrets |
+| Push | Web Push, VAPID (`py_vapid` keygen), subject `mailto:help.sahil.gob@gmail.com` | public key in client; private key only Rig 2 `.env` + Actions secrets |
 
 **Timezone rule:** DB stores UTC (`timestamptz`). All business logic (day boundaries, windows,
 "today") computes in `Asia/Kolkata`. A "day" is [00:00, 24:00) IST.
@@ -108,7 +108,7 @@ Backup is the only direct-DB consumer: dedicated read-only role.
 
 **Escalation ladder** (server-computed, passed to prompt): L0 < 60 min silent · L1 1–2 h ·
 L2 2–4 h (direct question about the named pending item) · L3 ≥ 4 h → **hard mode** (blunt,
-names the avoidance pattern, quotes Ch. 12 language; still ends with the smallest next action;
+names the avoidance pattern, blunt direct language; still ends with the smallest next action;
 never triggered by a *logged* bad day). Morning first nudge = yesterday's plan kickoff.
 
 **LLM call:** qwen2.5:7b-instruct, temp 0.6, max ~120 tokens, JSON output

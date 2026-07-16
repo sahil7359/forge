@@ -1,9 +1,10 @@
 # Forge
 
-Personal grind tracker for the 12-week TCS → GenAI transition (Blueprint v2.1).
+Personal accountability and grind tracker.
 iPhone PWA · hourly local-LLM coach nudges · midnight reports · free-tier hosting end to end.
 
-**Owner:** Sahil Chakraborty · single user v1 (multi-user-ready) · timezone Asia/Kolkata (IST)
+**Owner:** Sahil Chakraborty · contact: help.sahil.gob@gmail.com · single user v1
+(multi-user-ready) · timezone Asia/Kolkata (IST)
 
 ## Documents
 
@@ -33,6 +34,5 @@ Rig 2 is pull-only: nothing on the internet can reach the home network.
 
 ## Ground rules
 
-Forge is a **tool**, not portfolio project #4 (Blueprint Ch. 12 guardrail). Keep boilerplate
-cheap (Ch. 6A Rule 2), timebox per ImplementationPlan (~16 h to v1), park every new idea
-in Tracker.md → Someday.
+Forge is a **tool**, not another side project. Keep boilerplate cheap, timebox per
+ImplementationPlan (~16 h to v1), park every new idea in Tracker.md → Someday.

@@ -1,7 +1,7 @@
 // Forge PWA — S1 shell. Full app logic lands in P3 (docs/Design.md, docs/AppFlow.md).
 const CONFIG = {
-  API_BASE: "https://YOUR-SERVICE.onrender.com", // TODO P0: real Render URL
-  VAPID_PUBLIC_KEY: "PASTE_VAPID_PUBLIC_KEY",    // TODO P0: from `python -m py_vapid --gen`
+  API_BASE: "https://YOUR-SERVICE.onrender.com", // TODO P2: real Render URL
+  VAPID_PUBLIC_KEY: "BA8ke0txn2aswP8vVBE5y8YqcepoMx9TcNfGOVOBsenuzmhnxEEdhH2UQNVKuAed-d-330RIa_l0PO8KUGlKDdw",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -39,11 +39,14 @@ $("enablePush").onclick = async () => {
       applicationServerKey: urlB64ToUint8Array(CONFIG.VAPID_PUBLIC_KEY),
     });
     const j = sub.toJSON();
-    await api("/v1/push/subscriptions", {
-      method: "POST",
-      body: JSON.stringify({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, ua: navigator.userAgent }),
-    });
-    status("Subscribed ✓ — send a test push from Rig 2.\n" + JSON.stringify(j, null, 2), "ok");
+    // S1 spike: show the subscription JSON first so the push test never depends on the API.
+    status("Subscribed ✓ — copy this JSON for the Rig 2 send script.\n" + JSON.stringify(j, null, 2), "ok");
+    try {
+      await api("/v1/push/subscriptions", {
+        method: "POST",
+        body: JSON.stringify({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, ua: navigator.userAgent }),
+      });
+    } catch (_) { /* API route lands in P2; subscription JSON above is enough for S1 */ }
   } catch (e) { status("Failed: " + e.message, "warn"); }
 };
 

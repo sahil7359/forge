@@ -1,14 +1,14 @@
 # PRD — Forge v1
 
 **Owner:** Sahil Chakraborty · **Status:** locked for build · **Date:** 2026-07-15
-**One-liner:** an hourly AI accountability coach on the iPhone lock screen, powered entirely by free tiers and a local LLM, tracking the 12-week Blueprint grind.
+**One-liner:** an hourly AI accountability coach on the iPhone lock screen, powered entirely by free tiers and a local LLM, tracking a 12-week build sprint.
 
 ## 1. Problem
 
-Blueprint v2.1 demands 6–8 h/day of focused build time and a strict daily check-in ritual (Ch. 12).
+A 12-week build sprint demands 6–8 h/day of focused build time and a strict daily check-in ritual.
 Manual rituals decay: motivation dips mid-afternoon, pending tasks slip silently, and there is no
 accountability at hour granularity. Generic reminder apps nag without context; they don't know what
-was shipped at 13:10 or that the Docling task is still open. Cloud AI coaches cost money and see
+was shipped at 13:10 or that yesterday's task is still open. Cloud AI coaches cost money and see
 private data. Sahil owns idle GPU hardware (Rig 2) that can do this locally for free.
 
 ## 2. User
@@ -35,8 +35,8 @@ v2 (explicitly designed-for, not built): small invited group — see §7 and Sec
   `fitness`, `habit`, `deep-work block` (minutes). Text ≤ 4000 chars.
 - **F2 — Hourly LLM nudge (07:00–22:00 IST).** Ollama on Rig 2 reads today's logs, pending tasks,
   yesterday's plan, streak, last 3 nudges → generates title+body push. Tone: adaptive coach,
-  escalating with silence; **hard mode** at ≥ 4 h silent (blunt, names avoidance patterns per
-  Blueprint Ch. 12; never shaming a *logged* bad day — a stuck day still pushes).
+  escalating with silence; **hard mode** at ≥ 4 h silent (blunt, names avoidance patterns;
+  never shaming a *logged* bad day — a stuck day still pushes).
   Suppression: skip if last log < 25 min ago, min 50 min between nudges, silent during declared
   deep-work blocks (+15 min grace). Morning nudge kicks off yesterday's plan.
 - **F3 — Midnight report (00:05 IST).** LLM report: shipped today, blockers, numbers (minutes,
@@ -75,7 +75,7 @@ all monthlies. Deletion is subordinate to archival: no verified archive → no p
   all notifications are server-sent.
 - Rig 2 availability: nudges/reports degrade to fallback quality when it's off. Acceptable.
 - GitHub cron drift (±5–15 min) acceptable for fallbacks.
-- Build effort ≤ 16 h (Ch. 12: this must never displace Project 1).
+- Build effort ≤ 16 h (a tool must never displace the primary work it exists to support).
 
 ## 7. Sharing-readiness principle (v2 direction)
 

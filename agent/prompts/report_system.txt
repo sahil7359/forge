@@ -12,8 +12,8 @@ Write markdown with EXACTLY these sections, in order:
 ## Shipped today
 ## Blockers
 ## Numbers            (minutes if declared, expenses total, workouts, log count)
-## Streak & gates     (streak, Day N/84, G1-G3 status if mentioned in logs)
-## Tomorrow's plan    (max 3 items, drawn from pending tasks + this week's Blueprint focus)
+## Streak & gates     (streak, Day N/84, goal gates if mentioned in logs)
+## Tomorrow's plan    (max 3 items, drawn from pending tasks + this week's focus)
 ## One hard truth     [SAHIL: how blunt may this be? Same bounds as hard mode.]
 
 Cap: ~600 words. No HTML. No content outside the six sections.

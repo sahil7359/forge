@@ -15,7 +15,7 @@ session (Rules.md R7). Overrun → cut from PRD "Should" list, never extend.
       create `forge_api`, `forge_backup` roles; grab session-pooler DATABASE_URL.
 - [ ] Render: new web service from repo Dockerfile; set env (DATABASE_URL, tokens, CORS origin).
 - [ ] GitHub Pages enabled (Actions source); Actions secrets set (AGENT_TOKEN, VAPID_PRIVATE,
-      VAPID_SUB=mailto:sahilch7359@gmail.com, BACKUP_URL, API_BASE).
+      VAPID_SUB=mailto:help.sahil.gob@gmail.com, BACKUP_URL, API_BASE).
 
 DoD: empty FastAPI `/healthz` live on Render; blank page on Pages; `ollama list` shows qwen2.5.
 
@@ -54,7 +54,7 @@ downloads with timestamp appendix (use a hand-inserted fixture archive row).
       depth), Ollama client (90 s timeout, JSON validate + 1 retry + template fallback),
       pywebpush sender, nudge/report/archive jobs.
 - [ ] Prompts: write `nudge_system.txt` + `report_system.txt` **by hand** (Rules R1) — tone:
-      adaptive coach, L3 hard mode (names avoidance patterns, Ch. 12 language), fenced untrusted
+      adaptive coach, L3 hard mode (names avoidance patterns, blunt language), fenced untrusted
       log block, JSON contract, anti-repetition clause.
 - [ ] `register_tasks.ps1`: hourly 07–22 :00, daily 00:05, monthly 1st 00:25; wake-to-run,
       run-if-missed.
