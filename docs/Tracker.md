@@ -10,7 +10,7 @@ Update at the end of every session (Rules R7).
 | P1 POC spikes (S1 push · S2 Ollama · S3 cold start) | 2.5 h | S2 green · S1 awaits iPhone · S3 cycles running | 0.5 h |
 | P2 DB + API core | 3 h | deployed; 75 tests green; walkthrough blocked on migration 004 | 1.5 h |
 | P3 PWA | 3 h | built + deployed to Pages; browser-verified; iPhone DoD pending | 1.5 h |
-| P4 Agent on Rig 2 | 2.5 h | not started | — |
+| P4 Agent on Rig 2 | 2.5 h | built + tested (42 agent tests); Rig 2 deploy + forced-run DoD pending | 1 h |
 | P5 Actions fallbacks + backup | 1.5 h | not started | — |
 | P6 Hardening (Security §10) | 1.5 h | not started | — |
 | P7 Ship + 48 h burn-in | 1 h | not started | — |
@@ -34,7 +34,9 @@ Update at the end of every session (Rules R7).
 | 2026-07-16 | P0 done · P1 | public-showcase scrub (personal refs removed; contact → help.sahil.gob@gmail.com); P0 DoD verified (healthz · Pages 200 · qwen2.5); S1 spike page live (VAPID key wired, subscription JSON shown pre-API); S2 **green**: p95 0.61 s, 10/10 valid JSON, 141 tok/s | S1 awaits iPhone; S3 awaits real Render URL | 45 |
 | 2026-07-16 | P1–P3 | second personal-info pass (Blueprint/plan refs out; contact email swapped everywhere incl. seed + VAPID); S2 numbers re-attributed to Rig 1 (5070 Ti) — re-verify on Rig 2; S3 3-cycle measurement running against forge-tuvr.onrender.com; **P2 shipped**: auth/RLS/routes/limits/purge-proposal + migration 004, 75 tests, deployed, no-auth walkthrough green (CORS exact-origin verified), authed walkthrough blocked on 004; **P3 shipped**: full PWA deployed to Pages (composer+chips, offline IndexedDB queue w/ self-heal fix found in browser testing, sanitized reports w/ XSS verified inert, monthly+yearly jsPDF, sw shell cache, /settings API) | migration 004 (owner, SQL editor); S1 iPhone steps; Rig-2 S2 re-run; walkthrough re-run post-004 | 150 |
 
-**Next single task:** owner clears Blockers 1–2 (migration 004 + S1 iPhone test) → close P1 in the POC table → P4 (agent on Rig 2).
+| 2026-07-16 | P4 | agent package complete: nudge/report/archive jobs (AppFlow 3/5/6), Ollama contract (down→skip, invalid→retry→template), prompt builder with fenced untrusted logs (injection-neutralized, snapshot-tested), client-side suppression mirror, deterministic LLM-free archive builder (server counts verbatim); API adds agent-scope /v1/export + subscription-failure route; report job idempotent for the 07:00 retry task (added to register_tasks.ps1); real-qwen pipeline verified at 3 escalation levels (0.5–2.5 s) | P4 DoD needs: 004 → S1 → Rig 2 clone + register_tasks → forced runs | 60 |
+
+**Next single task:** owner clears Blockers 1–2 (migration 004 + S1 iPhone test) → deploy agent to Rig 2 (clone, venv, `agent/.env`, `register_tasks.ps1`, re-run S2 there) → forced nudge + forced report on the phone = P4 DoD → P5.
 
 **Process note:** every phase ends with an in-depth private report in `phase-reports/` (gitignored — never commit), containing blockers, incidents, evidence, owner to-dos, and the next phase's run command. P0 report exists.
 
