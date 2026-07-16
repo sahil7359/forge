@@ -1,5 +1,5 @@
 # Registers Forge agent jobs in Windows Task Scheduler on Rig 2. Run as admin, once.
-# TODO P0: set these two paths.
+# Set these two paths for the Rig 2 checkout before running.
 $py   = "C:\forge\agent\.venv\Scripts\python.exe"
 $repo = "C:\forge"
 
@@ -16,6 +16,9 @@ $hourly.StartBoundary = (Get-Date -Hour 7 -Minute 0 -Second 0).ToString("yyyy-MM
 Register-Forge "Forge Nudge" $hourly "nudge"
 
 Register-Forge "Forge Report" (New-ScheduledTaskTrigger -Daily -At 00:05) "report"
+
+# 07:00 retry — report.py exits quietly when yesterday's report already exists (AppFlow Flow 5)
+Register-Forge "Forge Report Retry" (New-ScheduledTaskTrigger -Daily -At 07:00) "report"
 
 # Monthly archive: 1st at 00:25 (schtasks handles calendar monthly cleanly)
 schtasks /Create /TN "Forge Archive" /SC MONTHLY /D 1 /ST 00:25 /F `

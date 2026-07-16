@@ -16,7 +16,11 @@ USER_ROUTES = [
     ("GET", "/v1/archives"),
     ("GET", "/v1/settings"),
 ]
-AGENT_ROUTES = [("GET", "/v1/context"), ("GET", "/v1/push/subscriptions")]
+AGENT_ROUTES = [
+    ("GET", "/v1/context"),
+    ("GET", "/v1/push/subscriptions"),
+    ("GET", "/v1/export?from=2026-07-01&to=2026-07-31"),
+]
 
 
 @pytest.mark.parametrize(("method", "path"), USER_ROUTES + AGENT_ROUTES)
@@ -48,6 +52,7 @@ def test_agent_token_on_user_route_is_403(client, method, path):
         ("GET", "/v1/today", USER_TOKEN),
         ("GET", "/v1/context", AGENT_TOKEN),
         ("GET", "/v1/push/subscriptions", AGENT_TOKEN),
+        ("GET", "/v1/export?from=2026-07-01&to=2026-07-31", AGENT_TOKEN),
     ],
 )
 def test_right_scope_is_200(client, method, path, token):

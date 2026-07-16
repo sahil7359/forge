@@ -57,6 +57,30 @@ async def unsubscribe(sub_id: uuid.UUID, conn: AsyncConnection = Depends(get_con
         raise HTTPException(404, {"code": "not_found", "message": "subscription not found"})
 
 
+@router.post("/push/subscriptions/{sub_id}/failure", dependencies=[Depends(require_agent)])
+async def report_failure(
+    sub_id: uuid.UUID, conn: AsyncConnection = Depends(get_conn)
+) -> dict[str, Any]:
+    """Senders report 404/410 pushes; after 3 failures the subscription drops out of
+    the live list (AppFlow Flow 9). A later successful subscribe resets the counter."""
+    row = (
+        await conn.execute(
+            text(
+                "update push_subscriptions set failures = failures + 1"
+                " where id = :id returning failures"
+            ),
+            {"id": str(sub_id)},
+        )
+    ).one_or_none()
+    if row is None:
+        raise HTTPException(404, {"code": "not_found", "message": "subscription not found"})
+    return {
+        "id": str(sub_id),
+        "failures": row.failures,
+        "dead": row.failures >= DEAD_AFTER_FAILURES,
+    }
+
+
 @router.get("/push/subscriptions", dependencies=[Depends(require_agent)])
 async def list_live(conn: AsyncConnection = Depends(get_conn)) -> dict[str, Any]:
     rows = await conn.execute(
