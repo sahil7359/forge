@@ -22,7 +22,7 @@ Update at the end of every session (Rules R7).
 |---|---|---|---|
 | S1 iOS push | lock-screen delivery, app closed, cellular + post-reboot | — | — |
 | S2 Ollama | p95 < 60 s, valid JSON ≥ 8/10, no hallucinated events | **green on Rig 1** — re-verify on Rig 2 (2060 Super) before P4 sign-off | model: qwen2.5:7b-instruct · tok/s: 141 · p95: 0.61 s · 10/10 valid JSON · 10/10 anchored · model load 32.6 s · 6.6 GB VRAM (measured on Rig 1 5070 Ti — ~100x gate margin, low risk on 2060S) |
-| S3 Cold start | agent survives ≤ 150 s, 3/3 | 3 timed cycles running (results → phase-reports/spikes/s3_results.txt) | wake times: |
+| S3 Cold start | agent survives ≤ 150 s, 3/3 | **green** (2026-07-16) — Actions-job sub-check lands with P5 | wake times: 13 s · 13 s · 12 s (40 min–4.8 h idle; first attempt each, zero retries; tenacity budget 150 s barely touched) |
 
 ## Session log
 
